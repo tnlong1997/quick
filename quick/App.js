@@ -35,14 +35,14 @@ export default class App extends Component<{}> {
   render() {
     value = AsyncStorage.getItem('1');
     if (value == null) {
-      source = './assets/blank.jpg'
+      backgroundImage = require('./assets/blank.jpg')
     }
     else {
-      source = value
+      // backgroundImage = require(value)
     }
     return (
       <ImageBackground
-        source={require('./assets/blank.jpg')}
+        source={backgroundImage}
         style={styles.container}
         resizeMode="cover"
       >
@@ -53,13 +53,19 @@ export default class App extends Component<{}> {
         <TouchableOpacity onPress = {this.plus.bind(this)}>
           <Icon name="circle-with-plus" size = {30} style={styles.button} />
         </TouchableOpacity>
-        <Icon name="circle-with-minus" size = {30} style={styles.button} />
+        <TouchableOpacity onPress = {this.del.bind(this)}>
+          <Icon name="circle-with-minus" size = {30} style={styles.button} />
+        </TouchableOpacity>
 
       </ImageBackground>
     );
   }
 
   cog() {
+
+  }
+
+  del() {
 
   }
 
@@ -82,7 +88,7 @@ export default class App extends Component<{}> {
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-        AsyncStorage.setItem('1', source)
+        AsyncStorage.setItem('1', response.uri)
         this.render()
       }
     });
