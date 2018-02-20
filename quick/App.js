@@ -9,44 +9,98 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  Image,
+  TouchableOpacity,
+  AsyncStorage,
+  ImageBackground,
 } from 'react-native';
-// import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Entypo';
 
-// const instructions = Platform.select({
-//   ios: 'Press Cmd+R to reload,\n' +
-//     'Cmd+D or shake for dev menu',
-//   android: 'Double tap R on your keyboard to reload,\n' +
-//     'Shake or press menu button for dev menu',
-// });
+var ImagePicker = require('react-native-image-picker');
 
-// const add_icon =
+// More info on all the options is below in the README...just some common use cases shown here
+var options = {
+  title: 'Select Avatar',
+  customButtons: [
+    {name: 'fb', title: 'Choose Photo from Facebook'},
+  ],
+  storageOptions: {
+    skipBackup: true,
+    path: 'images'
+  }
+};
 
 export default class App extends Component<{}> {
   render() {
+    value = AsyncStorage.getItem('1');
+    if (value == null) {
+      source = './assets/blank.jpg'
+    }
+    else {
+      source = value
+    }
     return (
-      <View style={styles.container}>
+      <ImageBackground
+        source={require('./assets/blank.jpg')}
+        style={styles.container}
+        resizeMode="cover"
+      >
 
-      </View>
+        <TouchableOpacity onPress = {this.cog.bind(this)}>
+          <Icon name="cog" size ={30} style={styles.button}/>
+        </TouchableOpacity>
+        <TouchableOpacity onPress = {this.plus.bind(this)}>
+          <Icon name="circle-with-plus" size = {30} style={styles.button} />
+        </TouchableOpacity>
+        <Icon name="circle-with-minus" size = {30} style={styles.button} />
+
+      </ImageBackground>
     );
   }
+
+  cog() {
+
+  }
+
+  plus() {
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        let source = { uri: response.uri };
+
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        AsyncStorage.setItem('1', source)
+        this.render()
+      }
+    });
+  }
 }
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  button: {
+    alignSelf: 'flex-start',
+    marginTop: 30,
+    marginRight: 5,
+    marginLeft: 5,
+  }
 });
