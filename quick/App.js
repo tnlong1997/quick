@@ -35,10 +35,14 @@ export default class App extends Component<{}> {
   render() {
     value = AsyncStorage.getItem('1');
     if (value == null) {
+      console.log("No value")
       backgroundImage = require('./assets/blank.jpg')
     }
     else {
-      // backgroundImage = require(value)
+      console.log("this is asyncstore" + value)
+      // backgroundImage = require('./assets/blank.jpg')
+      backgroundImage = require('./assets/150x150.png')
+      // backgroundImage = {uri: 'data:image/jpeg;base64,' + value}
     }
     return (
       <ImageBackground
@@ -65,8 +69,12 @@ export default class App extends Component<{}> {
 
   }
 
-  del() {
-
+  async del() {
+    try {
+      await AsyncStorage.removeItem('1')
+    } catch (error) {
+      console.log("Error deleting")
+    }
   }
 
   plus() {
@@ -88,7 +96,7 @@ export default class App extends Component<{}> {
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-        AsyncStorage.setItem('1', response.uri)
+        AsyncStorage.setItem('1', response.data)
         this.render()
       }
     });
